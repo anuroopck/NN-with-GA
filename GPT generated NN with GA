@@ -36,7 +36,7 @@ def fitness_function(individual, X, y):
     """Calculate fitness as inverse error."""
     output = forward_propagation(X, individual["weights"], individual["biases"], [relu, sigmoid])
     error = np.mean((output - y) ** 2)  # Mean Squared Error
-    return 1 / (error + 1e-6)  # Avoid division by zero
+    return 1 / (1 + np.exp(error))  # sigmoid like function
 
 def select_parents(population, fitnesses, num_parents):
     """Select best individuals based on fitness."""
