@@ -44,11 +44,13 @@ def select_parents(population, fitnesses, num_parents):
     return [population[i] for i in sorted_indices[:num_parents]]
 
 def crossover(parent1, parent2):
-    """Perform crossover between two parents."""
+    """Perform exchange crossover between two parents."""
     child = {"weights": [], "biases": []}
     for w1, w2, b1, b2 in zip(parent1["weights"], parent2["weights"], parent1["biases"], parent2["biases"]):
-        w_child = (w1 + w2) / 2  # Average crossover
-        b_child = (b1 + b2) / 2
+        mask = np.random.rand(*w1.shape) > 0.5  # Random binary mask
+        w_child = np.where(mask, w1, w2)  # Exchange crossover
+        b_mask = np.random.rand(*b1.shape) > 0.5
+        b_child = np.where(b_mask, b1, b2)
         child["weights"].append(w_child)
         child["biases"].append(b_child)
     return child
