@@ -26,7 +26,7 @@ def initialize_population(pop_size, layers):
     population = []
     for _ in range(pop_size):
         individual = {
-            "weights": [np.random.randn(layers[i], layers[i+1]) for i in range(len(layers)-1)],
+            "weights": [np.random.randn(layers[i], layers[i+1]) for i in range(len(layers)-1)],# declaring sets of matrices between years that too 20 each.
             "biases": [np.random.randn(layers[i+1]) for i in range(len(layers)-1)]
         }
         population.append(individual)
