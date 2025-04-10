@@ -41,9 +41,23 @@ def initialize_population(pop_size, layers):
 def fitness_function(individual, X, y):
     """Calculate fitness as inverse error."""
     output = forward_propagation(X, individual["weights"], individual["biases"])
-    print(np.shape(output))
-    error = np.mean((output - y) ** 2)  # Mean Squared Error
-    return 1 / (1 + np.exp(error))  # sigmoid like function
+    # print(np.shape(output))
+    true_labels = y  # assumed to be LongTensor of class indices
+
+#-----------------------Log Loss--------------------------------------
+    # # Gather the log-probs for the correct classes
+    # log_probs = output[range(len(true_labels)), true_labels]
+
+    # # Negative log likelihood
+    # error = -log_probs.mean()
+    # print("Manual NLL Loss:", error.item())
+#---------------------------------------------------
+
+    error = criterion(output, y)
+    print("Manual NLL Loss:",error)
+    out = 1 / (1 + np.exp(error.item()))# sigmoid like function
+    # print("Manual NLL Loss:",out)
+    return out 
 
 def select_parents(population, fitnesses, num_parents):
     """Select best individuals based on fitness."""
@@ -136,6 +150,7 @@ class MLP(nn.Module):
 
 # Instantiate and move the model to the device
 model = MLP(input_size=150, hidden_size1=128, hidden_size2=64, num_classes=len(CATEGORIES)).to(device)
+criterion = nn.CrossEntropyLoss()
 
 
 # Example MLP with 2 input neurons, 3 hidden neurons, and 1 output neuron
@@ -151,5 +166,15 @@ weights, biases = genetic_algorithm(X, y, layers)
 activation_functions = [relu, sigmoid]
 
 # Forward pass
-output = forward_propagation(X, weights, biases, activation_functions)
-print("Output:", output)
+output = forward_propagation(X, weights, biases)
+
+_, predicted = torch.max(output, 1)
+# print(np.shape(predicted))
+
+correct, total = 0, 0
+
+total = y.size(0)
+correct = (predicted == y).sum().item()
+
+test_accuracy = correct / total
+print(f"Test Accuracy: {test_accuracy:.4f}")
