@@ -81,6 +81,19 @@ class MLP(nn.Module):
 # Instantiate and move the model to the device
 model = MLP(input_size=150, hidden_size1=128, hidden_size2=64, num_classes=len(CATEGORIES)).to(device)
 
+# # Manually set weights and biases for fc1
+# with torch.no_grad():  # Avoid tracking in autograd
+#     model.fc1.weight = nn.Parameter(torch.tensor([[0.1, 0.2, 0.3, 0.4],
+#                                                   [0.5, 0.6, 0.7, 0.8],
+#                                                   [0.9, 1.0, 1.1, 1.2]]))
+#     model.fc1.bias = nn.Parameter(torch.tensor([0.1, 0.2, 0.3]))
+
+# # Manually set weights and biases for fc2
+# with torch.no_grad():
+#     model.fc2.weight = nn.Parameter(torch.tensor([[0.1, 0.2, 0.3],
+#                                                   [0.4, 0.5, 0.6]]))
+#     model.fc2.bias = nn.Parameter(torch.tensor([0.1, 0.2]))
+
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
